@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure OCR Flask App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+        }
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Recognition from Image</h1>
+        <form id="image-form" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" capture="camera" required>
+            <button type="submit">Upload and Analyze</button>
+        </form>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        document.getElementById('image-form').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent the form from submitting normally
+
+            const formData = new FormData(this);  // Get the form data
+
+            // Send a POST request with the image to the Flask server
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())  // Parse the response as JSON
+            .then(data => {
+                if (data.extracted_text) {
+                    // If extracted text is returned, display it
+                    document.getElementById('output').innerText = data.extracted_text;
+                } else {
+                    // If no text is found in the image, display a message
+                    document.getElementById('output').innerText = "No text found in the image.";
+                }
+            })
+            .catch(error => {
+                // Handle any errors that occur during the request
+                document.getElementById('output').innerText = "Error: " + error;
+            });
+        });
+    </script>
+</body>
+</html>
