@@ -52,7 +52,13 @@ def upload_image():
         
         # Secure the filename
         # print('hehe ---> ', secure_filename(file.filename))
+        # Return image URL and extracted text as response
+# return jsonify({
+#     'image_url': image_url,
+#     'extracted_text': extracted_text
+# })
         filename = file.filename
+        image_url = f'/uploads/{filename}'  # Provide URL for the uploaded image
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         
         # Save the file to the specified directory
@@ -65,7 +71,7 @@ def upload_image():
             # For example, if you are using Azure OCR or other processing:
             extracted_text = ocr_processing(image)  # Your custom OCR function to process the image
             print('extracted text ---> ',extracted_text)
-            return jsonify({"extracted_text": extracted_text})
+            return jsonify({"extracted_text": extracted_text, 'image_url': image_url})
         except Exception as e:
             return jsonify({"error": f"Error processing the image: {str(e)}"}), 500
     except Exception as e:

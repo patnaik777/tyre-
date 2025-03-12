@@ -31,6 +31,8 @@
             <input type="file" name="file" accept="image/*" capture="camera" required>
             <button type="submit">Upload and Analyze</button>
         </form>
+        <h2>Uploaded Image</h2>
+        <img id="uploaded-image" src="" alt="Processed Image">
         <div id="output"></div>
     </div>
 
@@ -47,6 +49,11 @@
             })
             .then(response => response.json())  // Parse the response as JSON
             .then(data => {
+                // Display the uploaded image
+                if (data.image_url) {
+                    document.getElementById('uploaded-image').src = data.image_url; // Set the image source
+                }
+            
                 if (data.extracted_text) {
                     // If extracted text is returned, display it
                     document.getElementById('output').innerText = data.extracted_text;
